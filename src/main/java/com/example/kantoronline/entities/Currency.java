@@ -1,6 +1,6 @@
 package com.example.kantoronline.entities;
 
-import com.example.kantoronline.enums.CurrencyType;
+import com.example.kantoronline.enums.CurrencyCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,7 @@ public class Currency {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(value = EnumType.STRING)
-    private CurrencyType currencyType;
+    private CurrencyCode currencyCode;
     @Column(precision = 19, scale = 4)
     private BigDecimal balance;
     @ManyToOne

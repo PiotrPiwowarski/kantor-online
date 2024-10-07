@@ -1,10 +1,10 @@
-package com.example.kantoronline.services.impl;
+package com.example.kantoronline.services.account.impl;
 
 import com.example.kantoronline.dtos.AddAccountDto;
 import com.example.kantoronline.entities.Account;
 import com.example.kantoronline.mapper.AccountMapper;
 import com.example.kantoronline.repositories.AccountRepository;
-import com.example.kantoronline.services.AccountService;
+import com.example.kantoronline.services.account.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

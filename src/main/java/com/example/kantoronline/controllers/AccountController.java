@@ -1,7 +1,7 @@
 package com.example.kantoronline.controllers;
 
 import com.example.kantoronline.dtos.AddAccountDto;
-import com.example.kantoronline.services.AccountService;
+import com.example.kantoronline.services.account.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,5 +18,15 @@ public class AccountController {
     public ResponseEntity<Long> addAccount(@RequestBody AddAccountDto addAccountDto) {
         long id = accountService.addAccount(addAccountDto);
         return ResponseEntity.ok(id);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Void> login() {
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        return ResponseEntity.ok().build();
     }
 }
