@@ -1,5 +1,6 @@
 package com.example.kantoronline.mapper;
 
+import com.example.kantoronline.dtos.AccountDto;
 import com.example.kantoronline.dtos.AddAccountDto;
 import com.example.kantoronline.entities.Account;
 import lombok.AccessLevel;
@@ -12,6 +13,13 @@ public final class AccountMapper {
         return Account.builder()
                 .email(addAccountDto.getEmail())
                 .password(addAccountDto.getPassword())
+                .build();
+    }
+
+    public static AccountDto map(Account account) {
+        return AccountDto.builder()
+                .id(account.getId())
+                .email(account.getEmail())
                 .build();
     }
 }

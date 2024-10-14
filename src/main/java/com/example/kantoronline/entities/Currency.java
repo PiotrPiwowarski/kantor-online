@@ -23,7 +23,7 @@ public class Currency {
     @Enumerated(value = EnumType.STRING)
     private CurrencyCode currencyCode;
     @Column(precision = 19, scale = 4)
-    private BigDecimal balance;
+    private BigDecimal currencyValue;
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;

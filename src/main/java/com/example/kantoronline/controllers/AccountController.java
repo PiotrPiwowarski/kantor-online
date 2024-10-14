@@ -1,5 +1,6 @@
 package com.example.kantoronline.controllers;
 
+import com.example.kantoronline.dtos.AccountDto;
 import com.example.kantoronline.dtos.AddAccountDto;
 import com.example.kantoronline.services.account.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,12 @@ public class AccountController {
     public ResponseEntity<Void> deleteAccount(@PathVariable long id) {
         accountService.deleteAccount(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountDto> getAccount(@PathVariable long id) {
+        AccountDto accountDto = accountService.getAccount(id);
+        return ResponseEntity.ok(accountDto);
     }
 
     @PostMapping("/login")

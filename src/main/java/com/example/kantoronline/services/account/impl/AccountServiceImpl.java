@@ -1,8 +1,10 @@
 package com.example.kantoronline.services.account.impl;
 
+import com.example.kantoronline.dtos.AccountDto;
 import com.example.kantoronline.dtos.AddAccountDto;
 import com.example.kantoronline.entities.Account;
 import com.example.kantoronline.exceptions.AccountWithSuchEmailAlreadyExistsException;
+import com.example.kantoronline.exceptions.NoAccountWithSuchIdException;
 import com.example.kantoronline.mapper.AccountMapper;
 import com.example.kantoronline.repositories.AccountRepository;
 import com.example.kantoronline.services.account.AccountService;
@@ -31,5 +33,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void deleteAccount(long id) {
         accountRepository.deleteById(id);
+    }
+
+    @Override
+    public AccountDto getAccount(long id) {
+        Account account = accountRepository.findById(id).orElseThrow(NoAccountWithSuchIdException::new);
+        return AccountMapper.map(account);
     }
 }
