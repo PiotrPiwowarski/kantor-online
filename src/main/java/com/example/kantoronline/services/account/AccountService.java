@@ -7,4 +7,5 @@ import org.springframework.stereotype.Service;
 public interface AccountService {
 
     long addAccount(AddAccountDto addAccountDto);
+    void deleteAccount(long id);
 }
