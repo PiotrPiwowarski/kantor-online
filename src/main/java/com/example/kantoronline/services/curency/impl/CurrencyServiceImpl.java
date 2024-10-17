@@ -12,7 +12,6 @@ import com.example.kantoronline.repositories.CurrencyRepository;
 import com.example.kantoronline.services.curency.CurrencyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 import java.util.Optional;
