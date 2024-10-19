@@ -7,13 +7,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class GetAccountBalanceDto {
+public class SellCurrencyDto {
 
     private long accountId;
+    @NotNull
+    private BigDecimal currencyValue;
     @NotNull
     private CurrencyCode currencyCode;
 }

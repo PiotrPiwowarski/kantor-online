@@ -36,8 +36,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountDto getAccount(long id) {
+    public AccountDto getAccountDto(long id) {
         Account account = accountRepository.findById(id).orElseThrow(NoAccountWithSuchIdException::new);
         return AccountMapper.map(account);
+    }
+
+    @Override
+    public Account getAccount(long accountId) {
+        Optional<Account> optionalAccount = accountRepository.findById(accountId);
+        if(optionalAccount.isEmpty()) {
+            throw new NoAccountWithSuchIdException();
+        }
+        return optionalAccount.get();
     }
 }

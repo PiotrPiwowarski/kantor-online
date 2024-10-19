@@ -11,6 +11,8 @@ public final class AccountMapper {
 
     public static Account map(AddAccountDto addAccountDto) {
         return Account.builder()
+                .firstName(addAccountDto.getFirstName())
+                .lastName(addAccountDto.getLastName())
                 .email(addAccountDto.getEmail())
                 .password(addAccountDto.getPassword())
                 .build();
@@ -19,6 +21,8 @@ public final class AccountMapper {
     public static AccountDto map(Account account) {
         return AccountDto.builder()
                 .id(account.getId())
+                .firstName(account.getFirstName())
+                .lastName(account.getLastName())
                 .email(account.getEmail())
                 .build();
     }

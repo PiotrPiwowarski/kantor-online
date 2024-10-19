@@ -2,12 +2,15 @@ package com.example.kantoronline.controllers;
 
 import com.example.kantoronline.dtos.AddCurrencyDto;
 import com.example.kantoronline.dtos.AccountBalanceDto;
+import com.example.kantoronline.dtos.SellCurrencyDto;
 import com.example.kantoronline.services.curency.CurrencyService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,16 +20,30 @@ public class CurrencyController {
     private final CurrencyService currencyService;
 
     @Parameter(description = "zasilenie konta")
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Long> addCurrency(@RequestBody AddCurrencyDto addCurrencyDto) {
         currencyService.addCurrency(addCurrencyDto);
         return ResponseEntity.ok().build();
     }
 
+    @Parameter(description = "wypłacanie pieniędzy")
+    @PostMapping("/sell")
+    public ResponseEntity<Void> sellCurrency(@RequestBody SellCurrencyDto sellCurrencyDto){
+        currencyService.sellCurrency(sellCurrencyDto);
+        return ResponseEntity.ok().build();
+    }
+
     @Parameter(description = "pobranie stanu konta w konkretnej walucie")
+    @GetMapping("/{accountId}/specific")
+    public ResponseEntity<AccountBalanceDto> getAccountBalanceBySpecificCurrency(@PathVariable long accountId, @NonNull @RequestParam String currencyCode) {
+        AccountBalanceDto accountBalanceDto = currencyService.getAccountBalanceBySpecificCurrency(accountId, currencyCode);
+        return ResponseEntity.ok(accountBalanceDto);
+    }
+
+    @Parameter(description = "pobranie stanu konta we wszystkich walutach")
     @GetMapping("/{accountId}")
-    public ResponseEntity<AccountBalanceDto> getAccountBalance(@PathVariable long accountId, @NonNull @RequestParam String currencyCode) {
-        AccountBalanceDto accountBalanceDto = currencyService.getAccountBalanceDto(accountId, currencyCode);
+    public ResponseEntity<List<AccountBalanceDto>> getAccountBalance(@PathVariable long accountId) {
+        List<AccountBalanceDto> accountBalanceDto = currencyService.getAccountBalance(accountId);
         return ResponseEntity.ok(accountBalanceDto);
     }
 }

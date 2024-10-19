@@ -1,6 +1,7 @@
 package com.example.kantoronline.entities;
 
 import com.example.kantoronline.enums.CurrencyCode;
+import com.example.kantoronline.enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,18 +16,20 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Data
 @Builder
-@Table(name = "CURRENCIES")
-public class Currency {
+@Table(name = "TRANSACTIONS")
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     @Enumerated(value = EnumType.STRING)
-    private CurrencyCode currencyCode;
+    private TransactionType transactionType;
     @NotNull
-    @Column(precision = 19, scale = 4)
     private BigDecimal currencyValue;
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
+    private CurrencyCode currencyCode;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
