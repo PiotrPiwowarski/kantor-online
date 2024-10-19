@@ -71,7 +71,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
 
-
+//TODO: dorobić logikę związaną z kupowaniem i sprzedażą walut (rozważyć 3 opcje: 1. z PLN na inną, 2. z innej na PLN oraz 3. z innej na inną)
     @Override
     public void currencyPurchase(CurrencyPurchaseDto currencyPurchaseDto) {
         Account account = accountService.getAccount(currencyPurchaseDto.getAccountId());
