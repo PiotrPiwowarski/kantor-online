@@ -9,17 +9,19 @@ CREATE TABLE ACCOUNTS (
 CREATE TABLE CURRENCIES (
     id bigint auto_increment primary key,
     currency_code enum('PLN', 'USD', 'AUD', 'CAD', 'EUR', 'HUF', 'CHF', 'GBP', 'JPY', 'CZK', 'DKK', 'NOK', 'SEK', 'XDR') not null,
-    currency_value numeric(10, 2) not null,
+    currency_value numeric(10, 4) not null,
     account_id bigint not null,
-    CONSTRAINT fk_currencies_account_id FOREIGN KEY(account_id) REFERENCES ACCOUNTS(id)
+    CONSTRAINT fk_currencies_account_id FOREIGN KEY(account_id) REFERENCES ACCOUNTS(id) ON DELETE CASCADE
 );
 
 CREATE TABLE TRANSACTIONS (
     id bigint auto_increment primary key,
-    transaction_type enum('SALE', 'PURCHASE', 'TOPPING_UP_ACCOUNT') not null,
+    transaction_type enum('SALE', 'PURCHASE', 'DEPOSIT', 'CASH_OUT') not null,
     currency_value numeric(10, 2) not null,
     currency_code enum('PLN', 'USD', 'AUD', 'CAD', 'EUR', 'HUF', 'CHF', 'GBP', 'JPY', 'CZK', 'DKK', 'NOK', 'SEK', 'XDR') not null,
-    account_id bigint not null
+    date timestamp not null,
+    account_id bigint not null,
+    CONSTRAINT fk_transactions_account_id FOREIGN KEY(account_id) REFERENCES ACCOUNTS(id) ON DELETE CASCADE
 );
 
 

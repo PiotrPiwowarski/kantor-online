@@ -2,10 +2,10 @@ package com.example.kantoronline.controllers;
 
 import com.example.kantoronline.dtos.AddCurrencyDto;
 import com.example.kantoronline.dtos.AccountBalanceDto;
+import com.example.kantoronline.dtos.CurrencyPurchaseDto;
 import com.example.kantoronline.dtos.SellCurrencyDto;
 import com.example.kantoronline.services.curency.CurrencyService;
 import io.swagger.v3.oas.annotations.Parameter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +20,22 @@ public class CurrencyController {
     private final CurrencyService currencyService;
 
     @Parameter(description = "zasilenie konta")
-    @PostMapping("/add")
-    public ResponseEntity<Long> addCurrency(@RequestBody AddCurrencyDto addCurrencyDto) {
-        currencyService.addCurrency(addCurrencyDto);
+    @PostMapping("/deposit")
+    public ResponseEntity<Long> deposit(@RequestBody AddCurrencyDto addCurrencyDto) {
+        currencyService.deposit(addCurrencyDto);
         return ResponseEntity.ok().build();
     }
 
     @Parameter(description = "wypłacanie pieniędzy")
-    @PostMapping("/sell")
-    public ResponseEntity<Void> sellCurrency(@RequestBody SellCurrencyDto sellCurrencyDto){
-        currencyService.sellCurrency(sellCurrencyDto);
+    @PostMapping("/cashout")
+    public ResponseEntity<Void> cashOut(@RequestBody SellCurrencyDto sellCurrencyDto){
+        currencyService.cashOut(sellCurrencyDto);
         return ResponseEntity.ok().build();
     }
 
     @Parameter(description = "pobranie stanu konta w konkretnej walucie")
     @GetMapping("/{accountId}/specific")
-    public ResponseEntity<AccountBalanceDto> getAccountBalanceBySpecificCurrency(@PathVariable long accountId, @NonNull @RequestParam String currencyCode) {
+    public ResponseEntity<AccountBalanceDto> getAccountBalanceBySpecificCurrency(@PathVariable long accountId, @RequestParam String currencyCode) {
         AccountBalanceDto accountBalanceDto = currencyService.getAccountBalanceBySpecificCurrency(accountId, currencyCode);
         return ResponseEntity.ok(accountBalanceDto);
     }
@@ -45,5 +45,12 @@ public class CurrencyController {
     public ResponseEntity<List<AccountBalanceDto>> getAccountBalance(@PathVariable long accountId) {
         List<AccountBalanceDto> accountBalanceDto = currencyService.getAccountBalance(accountId);
         return ResponseEntity.ok(accountBalanceDto);
+    }
+
+    @Parameter(description = "zakup waluty")
+    @PostMapping("/currencypurchase")
+    public ResponseEntity<Void> currencyPurchase(@RequestBody CurrencyPurchaseDto currencyPurchaseDto) {
+        currencyService.currencyPurchase(currencyPurchaseDto);
+        return ResponseEntity.ok().build();
     }
 }

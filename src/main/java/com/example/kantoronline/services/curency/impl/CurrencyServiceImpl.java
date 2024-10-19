@@ -2,6 +2,7 @@ package com.example.kantoronline.services.curency.impl;
 
 import com.example.kantoronline.dtos.AccountBalanceDto;
 import com.example.kantoronline.dtos.AddCurrencyDto;
+import com.example.kantoronline.dtos.CurrencyPurchaseDto;
 import com.example.kantoronline.dtos.SellCurrencyDto;
 import com.example.kantoronline.entities.Account;
 import com.example.kantoronline.entities.Currency;
@@ -32,7 +33,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     private final TransactionService transactionService;
 
     @Override
-    public void addCurrency(AddCurrencyDto addCurrencyDto) {
+    public void deposit(AddCurrencyDto addCurrencyDto) {
         Account account = accountService.getAccount(addCurrencyDto.getAccountId());
         Optional<Currency> optionalCurrency = currencyRepository.findByAccountAndCurrencyCode(account, addCurrencyDto.getCurrencyCode());
         Currency currency;
@@ -49,12 +50,13 @@ public class CurrencyServiceImpl implements CurrencyService {
             BigDecimal sum = value.add(addCurrencyDto.getCurrencyValue());
             currency.setCurrencyValue(sum);
         }
-        transactionService.addTransaction(TransactionType.TOPPING_UP_ACCOUNT, addCurrencyDto.getCurrencyValue(), addCurrencyDto.getCurrencyCode(), addCurrencyDto.getAccountId());
+        transactionService.addTransaction(TransactionType.DEPOSIT, addCurrencyDto.getCurrencyValue(),
+                addCurrencyDto.getCurrencyCode(), addCurrencyDto.getAccountId());
         currencyRepository.save(currency);
     }
 
     @Override
-    public void sellCurrency(SellCurrencyDto sellCurrencyDto) {
+    public void cashOut(SellCurrencyDto sellCurrencyDto) {
         Account account = accountService.getAccount(sellCurrencyDto.getAccountId());
         Optional<Currency> optionalCurrency = currencyRepository.findByAccountAndCurrencyCode(account, sellCurrencyDto.getCurrencyCode());
         Currency currency = optionalCurrency.orElseThrow(NotEnoughCurrencyToMakeTransaction::new);
@@ -63,7 +65,23 @@ public class CurrencyServiceImpl implements CurrencyService {
             throw new NotEnoughCurrencyToMakeTransaction();
         }
         currency.setCurrencyValue(result);
+        transactionService.addTransaction(TransactionType.CASH_OUT, sellCurrencyDto.getCurrencyValue(),
+                sellCurrencyDto.getCurrencyCode(), sellCurrencyDto.getAccountId());
         currencyRepository.save(currency);
+    }
+
+
+
+    @Override
+    public void currencyPurchase(CurrencyPurchaseDto currencyPurchaseDto) {
+        Account account = accountService.getAccount(currencyPurchaseDto.getAccountId());
+        Currency currency = currencyRepository
+                .findByAccountAndCurrencyCode(account, currencyPurchaseDto.getFromCurrency())
+                .orElseThrow(NotEnoughCurrencyToMakeTransaction::new);
+        if(currency.getCurrencyValue().compareTo(currencyPurchaseDto.getCurrencyValue()) < 0) {
+            throw new NotEnoughCurrencyToMakeTransaction();
+        }
+
     }
 
     @Override

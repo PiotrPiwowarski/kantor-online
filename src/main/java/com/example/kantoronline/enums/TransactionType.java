@@ -4,5 +4,6 @@ public enum TransactionType {
 
     SALE,
     PURCHASE,
-    TOPPING_UP_ACCOUNT
+    DEPOSIT,
+    CASH_OUT
 }
