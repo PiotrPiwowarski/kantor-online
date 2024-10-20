@@ -34,6 +34,8 @@ public class CurrencyServiceImpl implements CurrencyService {
     private final TransactionService transactionService;
     private final ExchangeRatesService exchangeRatesService;
 
+    private final static BigDecimal AFTER_DEDUCTING_COMMISSION = new BigDecimal("0.92");
+
     @Override
     public void deposit(AddCurrencyDto addCurrencyDto) {
         Account account = accountService.getAccount(addCurrencyDto.getAccountId());
@@ -41,7 +43,7 @@ public class CurrencyServiceImpl implements CurrencyService {
         Currency currency;
         if(optionalCurrency.isEmpty()) {
             currency = Currency.builder()
-                    .currencyValue(addCurrencyDto.getCurrencyValue())
+                    .currencyValue(addCurrencyDto.getCurrencyValue().multiply(AFTER_DEDUCTING_COMMISSION))
                     .currencyCode(addCurrencyDto.getCurrencyCode())
                     .account(account)
                     .build();
@@ -49,7 +51,7 @@ public class CurrencyServiceImpl implements CurrencyService {
         } else {
             currency = optionalCurrency.get();
             BigDecimal value = currency.getCurrencyValue();
-            BigDecimal sum = value.add(addCurrencyDto.getCurrencyValue());
+            BigDecimal sum = value.add(addCurrencyDto.getCurrencyValue()).multiply(AFTER_DEDUCTING_COMMISSION);
             currency.setCurrencyValue(sum);
         }
         transactionService.addTransaction(TransactionType.DEPOSIT, addCurrencyDto.getCurrencyValue(),
@@ -62,7 +64,7 @@ public class CurrencyServiceImpl implements CurrencyService {
         Account account = accountService.getAccount(currencyWithdrawalDto.getAccountId());
         Optional<Currency> optionalCurrency = currencyRepository.findByAccountAndCurrencyCode(account, currencyWithdrawalDto.getCurrencyCode());
         Currency currency = optionalCurrency.orElseThrow(NotEnoughCurrencyToMakeTransactionException::new);
-        BigDecimal result = currency.getCurrencyValue().subtract(currencyWithdrawalDto.getCurrencyValue());
+        BigDecimal result = currency.getCurrencyValue().subtract(currencyWithdrawalDto.getCurrencyValue()).multiply(AFTER_DEDUCTING_COMMISSION);
         if(result.compareTo(BigDecimal.ZERO) < 0) {
             throw new NotEnoughCurrencyToMakeTransactionException();
         }
@@ -109,12 +111,12 @@ public class CurrencyServiceImpl implements CurrencyService {
             toCurrency = Currency.builder()
                     .currencyCode(currencyPurchaseDto.getToCurrency())
                     .account(account)
-                    .currencyValue(purchasedCurrency)
+                    .currencyValue(purchasedCurrency.multiply(AFTER_DEDUCTING_COMMISSION))
                     .build();
             userCurrencies.add(toCurrency);
         } else {
             toCurrency = toCurrencyList.get(0);
-            toCurrency.setCurrencyValue(purchasedCurrency);
+            toCurrency.setCurrencyValue(toCurrency.getCurrencyValue().add(purchasedCurrency).multiply(AFTER_DEDUCTING_COMMISSION));
             List<Currency> list = userCurrencies.stream().filter(c -> !c.getCurrencyCode().equals(currencyPurchaseDto.getToCurrency())).toList();
             userCurrencies.addAll(list);
             userCurrencies.add(toCurrency);
