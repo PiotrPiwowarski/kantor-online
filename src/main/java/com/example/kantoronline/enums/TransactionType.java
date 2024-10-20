@@ -5,5 +5,5 @@ public enum TransactionType {
     SALE,
     PURCHASE,
     DEPOSIT,
-    CASH_OUT
+    WITHDRAWAL
 }

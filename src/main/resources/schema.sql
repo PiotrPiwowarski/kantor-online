@@ -16,7 +16,7 @@ CREATE TABLE CURRENCIES (
 
 CREATE TABLE TRANSACTIONS (
     id bigint auto_increment primary key,
-    transaction_type enum('SALE', 'PURCHASE', 'DEPOSIT', 'CASH_OUT') not null,
+    transaction_type enum('SALE', 'PURCHASE', 'DEPOSIT', 'WITHDRAWAL') not null,
     currency_value numeric(10, 2) not null,
     currency_code enum('PLN', 'USD', 'AUD', 'CAD', 'EUR', 'HUF', 'CHF', 'GBP', 'JPY', 'CZK', 'DKK', 'NOK', 'SEK', 'XDR') not null,
     date timestamp not null,

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Data
 @Builder
-public class SellCurrencyDto {
+public class CurrencyWithdrawalDto {
 
     private long accountId;
     @NotNull
