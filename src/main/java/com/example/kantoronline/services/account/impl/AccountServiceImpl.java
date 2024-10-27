@@ -2,13 +2,19 @@ package com.example.kantoronline.services.account.impl;
 
 import com.example.kantoronline.dtos.AccountDto;
 import com.example.kantoronline.dtos.AddAccountDto;
+import com.example.kantoronline.dtos.AuthenticationDto;
+import com.example.kantoronline.dtos.LoginDto;
 import com.example.kantoronline.entities.Account;
 import com.example.kantoronline.exceptions.AccountWithSuchEmailAlreadyExistsException;
 import com.example.kantoronline.exceptions.NoAccountWithSuchIdException;
 import com.example.kantoronline.mapper.AccountMapper;
 import com.example.kantoronline.repositories.AccountRepository;
 import com.example.kantoronline.services.account.AccountService;
+import com.example.kantoronline.services.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,6 +24,9 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public long addAccount(AddAccountDto addAccountDto) {
@@ -25,7 +34,7 @@ public class AccountServiceImpl implements AccountService {
         if(optionalAccount.isPresent()) {
             throw new AccountWithSuchEmailAlreadyExistsException();
         }
-        Account account = AccountMapper.map(addAccountDto);
+        Account account = AccountMapper.map(addAccountDto,passwordEncoder);
         Account savedAccount = accountRepository.save(account);
         return savedAccount.getId();
     }
@@ -48,5 +57,27 @@ public class AccountServiceImpl implements AccountService {
             throw new NoAccountWithSuchIdException();
         }
         return optionalAccount.get();
+    }
+
+    @Override
+    public AuthenticationDto login(LoginDto loginDto) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDto.getEmail(),
+                        loginDto.getPassword()
+                )
+        );
+        Account account = accountRepository
+                .findByEmail(loginDto.getEmail())
+                .orElseThrow(NoAccountWithSuchIdException::new);
+        String jwtToken = jwtService.generateToken(account);
+        return AuthenticationDto.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    @Override
+    public void logout() {
+
     }
 }

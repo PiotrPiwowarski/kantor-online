@@ -2,9 +2,10 @@ package com.example.kantoronline.controllers;
 
 import com.example.kantoronline.dtos.AccountDto;
 import com.example.kantoronline.dtos.AddAccountDto;
+import com.example.kantoronline.dtos.AuthenticationDto;
+import com.example.kantoronline.dtos.LoginDto;
 import com.example.kantoronline.services.account.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @Operation(summary = "Dodawanie nowego konta")
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<Long> addAccount(@RequestBody AddAccountDto addAccountDto) {
         long id = accountService.addAccount(addAccountDto);
         return ResponseEntity.ok(id);
@@ -43,13 +44,15 @@ public class AccountController {
 
     @Operation(summary = "Zalogowanie")
     @PostMapping("/login")
-    public ResponseEntity<Void> login() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AuthenticationDto> login(@RequestBody LoginDto loginDto) {
+        AuthenticationDto authenticationDto = accountService.login(loginDto);
+        return ResponseEntity.ok(authenticationDto);
     }
 
     @Operation(summary = "Wylogowanie")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
+        accountService.logout();
         return ResponseEntity.ok().build();
     }
 }

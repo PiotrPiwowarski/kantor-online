@@ -1,5 +1,6 @@
 package com.example.kantoronline.dtos;
 
+import com.example.kantoronline.enums.AccountRole;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +20,6 @@ public class AccountDto {
     private String lastName;
     @NotNull
     private String email;
+    @NotNull
+    private AccountRole accountRole;
 }
