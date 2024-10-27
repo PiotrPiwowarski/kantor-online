@@ -41,6 +41,8 @@ public class Account implements UserDetails {
     private List<Currency> currencies;
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions;
+    @OneToMany(mappedBy = "account")
+    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

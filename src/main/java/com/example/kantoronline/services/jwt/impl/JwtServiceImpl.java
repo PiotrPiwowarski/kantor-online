@@ -1,5 +1,8 @@
 package com.example.kantoronline.services.jwt.impl;
 
+import com.example.kantoronline.entities.Token;
+import com.example.kantoronline.exceptions.ThisTokenIsNotActiveException;
+import com.example.kantoronline.repositories.TokenRepository;
 import com.example.kantoronline.services.jwt.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,6 +17,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -21,6 +25,7 @@ import java.util.function.Function;
 public class JwtServiceImpl implements JwtService {
 
     private static final String SECRET_KEY = "e3dd0ea9944c97e8213949ebf2a47f270c6238951e34ed745a943be23cb07536";
+    private final TokenRepository tokenRepository;
 
     @Override
     public String extractUsername(String token) {
@@ -53,6 +58,11 @@ public class JwtServiceImpl implements JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    @Override
+    public void doesTokenExist(String token) {
+        tokenRepository.findByToken(token).orElseThrow(ThisTokenIsNotActiveException::new);
     }
 
     private boolean isTokenExpired(String token) {

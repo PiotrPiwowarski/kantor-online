@@ -5,10 +5,12 @@ import com.example.kantoronline.dtos.AddAccountDto;
 import com.example.kantoronline.dtos.AuthenticationDto;
 import com.example.kantoronline.dtos.LoginDto;
 import com.example.kantoronline.entities.Account;
+import com.example.kantoronline.entities.Token;
 import com.example.kantoronline.exceptions.AccountWithSuchEmailAlreadyExistsException;
 import com.example.kantoronline.exceptions.NoAccountWithSuchIdException;
 import com.example.kantoronline.mapper.AccountMapper;
 import com.example.kantoronline.repositories.AccountRepository;
+import com.example.kantoronline.repositories.TokenRepository;
 import com.example.kantoronline.services.account.AccountService;
 import com.example.kantoronline.services.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +31,7 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final TokenRepository tokenRepository;
 
     @Override
     public long addAccount(AddAccountDto addAccountDto) {
@@ -59,6 +64,7 @@ public class AccountServiceImpl implements AccountService {
         return optionalAccount.get();
     }
 
+    @Transactional
     @Override
     public AuthenticationDto login(LoginDto loginDto) {
         authenticationManager.authenticate(
@@ -71,9 +77,20 @@ public class AccountServiceImpl implements AccountService {
                 .findByEmail(loginDto.getEmail())
                 .orElseThrow(NoAccountWithSuchIdException::new);
         String jwtToken = jwtService.generateToken(account);
+        tokenRepository.deleteAllByAccount(account);
+        saveUserToken(jwtToken, account);
         return AuthenticationDto.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    private void saveUserToken(String jwtToken, Account account) {
+        Token token = Token.builder()
+                .token(jwtToken)
+                .account(account)
+                .expired(false)
+                .build();
+        tokenRepository.save(token);
     }
 
     @Override
