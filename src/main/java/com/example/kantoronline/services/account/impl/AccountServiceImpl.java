@@ -88,7 +88,6 @@ public class AccountServiceImpl implements AccountService {
         Token token = Token.builder()
                 .token(jwtToken)
                 .account(account)
-                .expired(false)
                 .build();
         tokenRepository.save(token);
     }

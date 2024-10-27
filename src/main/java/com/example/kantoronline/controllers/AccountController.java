@@ -52,7 +52,6 @@ public class AccountController {
     @Operation(summary = "Wylogowanie")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
-        accountService.logout();
         return ResponseEntity.ok().build();
     }
 }
