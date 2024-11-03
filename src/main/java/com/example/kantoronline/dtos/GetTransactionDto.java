@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,5 +21,5 @@ public class GetTransactionDto {
     private BigDecimal currencyValue;
     private CurrencyCode currencyCode;
     private long accountId;
-    private LocalDate date;
+    private LocalDateTime dateTime;
 }

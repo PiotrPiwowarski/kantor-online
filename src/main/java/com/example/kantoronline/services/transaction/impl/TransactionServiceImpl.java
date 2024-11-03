@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,7 +31,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .currencyValue(currencyValue)
                 .currencyCode(currencyCode)
                 .account(account)
-                .date(LocalDate.now())
+                .dateTime(LocalDateTime.now())
                 .build();
         transactionRepository.save(transaction);
     }
@@ -46,15 +47,17 @@ public class TransactionServiceImpl implements TransactionService {
                         .currencyValue(transaction.getCurrencyValue())
                         .currencyCode(transaction.getCurrencyCode())
                         .accountId(account.getId())
-                        .date(transaction.getDate())
+                        .dateTime(transaction.getDateTime())
                         .build())
                 .toList();
     }
 
     @Override
-    public List<GetTransactionDto> getTransactionsOfDate(long accountId, int year, int month, int day) {
+    public List<GetTransactionDto> getTransactionsOfDate(long accountId, LocalDate date) {
         Account account = accountService.getAccount(accountId);
-        List<Transaction> transactions = transactionRepository.findAllByAccountAndDate(account, LocalDate.of(year, month, day));
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+        List<Transaction> transactions = transactionRepository.findAllByAccountAndDateTimeBetween(account, startOfDay, endOfDay);
         return transactions.stream()
                 .map(transaction -> GetTransactionDto.builder()
                         .id(transaction.getId())
@@ -62,7 +65,7 @@ public class TransactionServiceImpl implements TransactionService {
                         .currencyValue(transaction.getCurrencyValue())
                         .currencyCode(transaction.getCurrencyCode())
                         .accountId(account.getId())
-                        .date(transaction.getDate())
+                        .dateTime(transaction.getDateTime())
                         .build())
                 .toList();
     }

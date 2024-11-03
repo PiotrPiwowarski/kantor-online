@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,11 +29,8 @@ public class TransactionController {
 
     @Operation(summary = "Pobieranie listy transakcji z danego dnia")
     @GetMapping("/{accountId}")
-    public ResponseEntity<List<GetTransactionDto>> getTransactionsOfDate(@PathVariable long accountId,
-                                                                   @RequestParam int year,
-                                                                   @RequestParam int month,
-                                                                   @RequestParam int day) {
-        List<GetTransactionDto> transactions = transactionService.getTransactionsOfDate(accountId, year, month, day);
+    public ResponseEntity<List<GetTransactionDto>> getTransactionsOfDate(@PathVariable long accountId, @RequestParam LocalDate localDate) {
+        List<GetTransactionDto> transactions = transactionService.getTransactionsOfDate(accountId, localDate);
         return ResponseEntity.ok(transactions);
     }
 }
