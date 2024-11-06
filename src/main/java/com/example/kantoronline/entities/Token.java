@@ -21,6 +21,6 @@ public class Token {
     @NotNull
     private String token;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "account_id")
     private Account account;
 }

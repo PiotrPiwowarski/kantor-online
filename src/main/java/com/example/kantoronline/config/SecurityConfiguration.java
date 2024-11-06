@@ -1,6 +1,5 @@
 package com.example.kantoronline.config;
 
-import com.example.kantoronline.services.logout.LogoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
