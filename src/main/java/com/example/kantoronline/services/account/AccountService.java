@@ -15,5 +15,4 @@ public interface AccountService {
     AccountDto getAccountDto(long id);
     Account getAccount(long id);
     AuthenticationDto login(LoginDto loginDto);
-    void logout();
 }
