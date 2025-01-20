@@ -34,6 +34,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public long addAccount(AddAccountDto addAccountDto) {
+        if(addAccountDto.getEmail().length() == 0 || addAccountDto.getPassword().length() == 0 || addAccountDto.getFirstName().length() == 0 || addAccountDto.getLastName().length() == 0) {
+            throw new IllegalStateException("Błędne dane użytkownika");
+        }
         Optional<Account> optionalAccount = accountRepository.findByEmail(addAccountDto.getEmail());
         if(optionalAccount.isPresent()) {
             throw new AccountWithSuchEmailAlreadyExistsException();
@@ -79,6 +82,7 @@ public class AccountServiceImpl implements AccountService {
         tokenRepository.deleteAllByAccount(account);
         saveUserToken(jwtToken, account);
         return AuthenticationDto.builder()
+                .accountId(account.getId())
                 .token(jwtToken)
                 .build();
     }
